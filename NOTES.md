@@ -57,3 +57,5 @@ All the fields you listed are there. Differences and additions:
 - **ChatGPT plugin link.** The name is a link driven by `pluginUrl` in `src/data/site.ts`. While that is `#`, it goes to the Connect section like the other placeholder links. I did not print "[PLUGIN URL]" on the page.
 - **`.gitignore`** also excludes `Essa-Arshad-Portfolio-Design.pdf` at the top level, since it is a copy of the design export.
 - **Lighthouse (mobile, local preview, with the base path):** 100 across the board on home, K-12, Nook & Acre, DismissalIQ and résumé.
+- **Repo visibility.** GitHub Pages isn't available for private repos on your plan, so with your go-ahead I made `essashahid/essa-arshad` public and enabled Pages (source: GitHub Actions).
+- **First deploy is blocked by GitHub billing.** The workflow run stops before it starts with "your account is locked due to a billing issue". Fix that at https://github.com/settings/billing, then re-run the workflow (Actions → Deploy to GitHub Pages → Run workflow). Nothing in the repo needs to change.

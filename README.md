@@ -21,7 +21,7 @@ npm run preview    # serves dist/ locally
 
 ## Deploy
 
-**GitHub Pages (live now).** Every push to `main` runs `.github/workflows/deploy.yml`, which builds the site and publishes it to https://essashahid.github.io/essa-arshad/. The workflow sets `SITE_URL` and `BASE_PATH` for you.
+**GitHub Pages.** Every push to `main` runs `.github/workflows/deploy.yml`, which builds the site and publishes it to https://essashahid.github.io/essa-arshad/. The workflow sets `SITE_URL` and `BASE_PATH` for you. You can also run it by hand: **Actions → Deploy to GitHub Pages → Run workflow**.
 
 **Vercel (when you're ready).** In Vercel: **Add New → Project**, pick the repo, and deploy. Vercel detects Astro; no settings to change. The site is served from the root there, and canonical URLs, the sitemap, `robots.txt` and `llms.txt` use your Vercel production domain automatically.
 
