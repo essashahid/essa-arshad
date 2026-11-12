@@ -1,0 +1,50 @@
+---
+/**
+ * Home page project tile: a gray 16:10 thumbnail with a caption underneath.
+ * The thumbnail is the loop video if the project has one, then a poster image
+ * (a screenshot), then its mock UI.
+ */
+import LoopVideo from './LoopVideo.astro';
+import ProjectMock from './mocks/ProjectMock.astro';
+import { projectPath, tileCaption, type Project } from '../lib/projects';
+import { withBase } from '../lib/paths';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { title, status, tileLink, liveUrl, loopVideo, poster, mock } = project.data;
+
+const external = tileLink === 'live' && Boolean(liveUrl);
+const href = external && liveUrl ? liveUrl : projectPath(project);
+const label = external ? `${title}, live app` : status === 'In progress' ? `${title} project` : `${title} case study`;
+---
+
+<figure class="flex flex-col gap-2.5">
+  <a href={href} aria-label={label} class="relative block aspect-[16/10] overflow-hidden rounded-xl bg-tile text-ink">
+    {
+      loopVideo ? (
+        <LoopVideo src={loopVideo} poster={poster} label={`${title} demo`} ratio="16 / 10" />
+      ) : poster ? (
+        <div aria-hidden="true" class="absolute inset-0 flex items-center px-8 py-[30px]">
+          <img
+            src={withBase(poster)}
+            alt=""
+            width="1200"
+            height="750"
+            loading="lazy"
+            decoding="async"
+            class="aspect-video w-full rounded-[10px] object-cover object-top shadow-card"
+          />
+        </div>
+      ) : (
+        <ProjectMock mock={mock} variant="tile" />
+      )
+    }
+  </a>
+  <figcaption class="flex justify-between gap-3">
+    <a href={href} class="text-ink">{title}{external && ' ↗'}</a>
+    <span class="text-muted">{tileCaption(project)}</span>
+  </figcaption>
+</figure>

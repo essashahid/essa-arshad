@@ -1,0 +1,15 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  /** Width classes for the text column, e.g. "max-w-[600px]". */
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<footer class:list={['mx-auto flex flex-col px-6 pt-16 pb-28 text-muted', className]}>
+  <span>{site.footer.line}</span>
+  <span>{site.footer.year}</span>
+</footer>

@@ -1,0 +1,56 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Lets you re-run the deploy by hand from the Actions tab.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; let a running deploy finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Read the Node version from .nvmrc
+        id: node
+        run: echo "version=$(cat .nvmrc)" >> "$GITHUB_OUTPUT"
+
+      - name: Look up the GitHub Pages URL
+        id: pages
+        uses: actions/configure-pages@v6
+
+      # astro.config.mjs reads these. For this repo they resolve to
+      # https://essashahid.github.io and /essa-arshad. With a custom domain
+      # the base path becomes empty and the site is served from the root.
+      - name: Set SITE_URL and BASE_PATH
+        run: |
+          echo "SITE_URL=${{ steps.pages.outputs.origin }}" >> "$GITHUB_ENV"
+          echo "BASE_PATH=${{ steps.pages.outputs.base_path }}" >> "$GITHUB_ENV"
+
+      - name: Install, build and upload the site
+        uses: withastro/action@v6
+        with:
+          node-version: ${{ steps.node.outputs.version }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

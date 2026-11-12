@@ -1,0 +1,30 @@
+---
+/** Home tile mock for the K-12 scraper: a results table with a row flagged for review. */
+const cols = 'grid grid-cols-[1.3fr_1.1fr_0.6fr_0.8fr] gap-2 px-3 py-2';
+const confColor = { High: 'text-good', Med: 'text-warn', Low: 'text-bad' } as const;
+
+const rows: { district: string; contact: string; conf: keyof typeof confColor; source: string; review?: boolean }[] = [
+  { district: 'Fairview USD', contact: 'Superintendent', conf: 'High', source: '/staff' },
+  { district: 'Lakeside SD', contact: 'Tech director', conf: 'High', source: '/contact' },
+  { district: 'Pine Ridge ISD', contact: 'Main office', conf: 'Med', source: '/about' },
+  { district: 'North Valley SD', contact: 'Business office', conf: 'Low', source: 'To review', review: true },
+];
+---
+
+<div aria-hidden="true" class="absolute inset-0 flex items-center px-8 py-[30px]">
+  <div class="w-full overflow-hidden rounded-[10px] bg-white text-[11px] leading-[1.4] shadow-card">
+    <div class:list={[cols, 'border-b border-hair text-muted']}>
+      <span>District</span><span>Contact</span><span>Conf.</span><span>Source</span>
+    </div>
+    {
+      rows.map((row, i) => (
+        <div class:list={[cols, i < rows.length - 1 && 'border-b border-hair', row.review && 'bg-row']}>
+          <span>{row.district}</span>
+          <span>{row.contact}</span>
+          <span class={confColor[row.conf]}>{row.conf}</span>
+          <span class:list={[!row.review && 'text-muted']}>{row.source}</span>
+        </div>
+      ))
+    }
+  </div>
+</div>

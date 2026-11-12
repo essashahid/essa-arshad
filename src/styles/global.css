@@ -1,0 +1,121 @@
+@import 'tailwindcss';
+
+/* The original static design lives here for reference only. */
+@source not "../../Essa-Arshad-Portfolio";
+
+@theme {
+  --font-sans: 'Inter Variable', system-ui, -apple-system, sans-serif;
+
+  /* Every color in the design. Nothing else is used. */
+  --color-ink: #171717;
+  --color-muted: #6f6f6f;
+  --color-chip: #3f3f3f;
+  --color-rule: #ededed;
+  --color-hair: #f0f0f0;
+  --color-edge: #e5e5e5;
+  --color-underline: #d4d4d4;
+  --color-tick: #bdbdbd;
+  --color-tile: #f3f3f3;
+  --color-panel: #f7f7f7;
+  --color-row: #fafafa;
+  --color-bubble: #f5f5f5;
+  --color-skeleton: #e3e3e3;
+  --color-highlight: #fbefb0;
+  --color-good: #2f7d46;
+  --color-warn: #8a5a00;
+  --color-bad: #a33a3a;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 20px rgba(0, 0, 0, 0.06);
+  --shadow-card-lg: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-thumb: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'tnum' 1;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background: #ffffff;
+    color: var(--color-ink);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
+
+/* Inline text link: dark text with a light gray underline. */
+@utility link {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-underline);
+  text-underline-offset: 3px;
+}
+
+/*
+ * Case study body. The MDX files are plain Markdown, and these rules give the
+ * headings, paragraphs and numbered steps the look from the design.
+ */
+.case-prose {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.case-prose h2 {
+  margin-top: 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.case-prose > h2:first-child {
+  margin-top: 0;
+}
+
+.case-prose strong {
+  font-weight: 500;
+}
+
+.case-prose a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-underline);
+  text-underline-offset: 3px;
+}
+
+.case-prose ol {
+  counter-reset: step;
+  border-top: 1px solid var(--color-rule);
+}
+
+.case-prose ol > li {
+  counter-increment: step;
+  position: relative;
+  padding: 10px 0 10px 44px;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.case-prose ol > li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  color: var(--color-muted);
+}
+
+.case-prose ul {
+  list-style: disc;
+  padding-left: 16px;
+}

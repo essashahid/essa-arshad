@@ -1,0 +1,54 @@
+---
+/**
+ * Case study hero mock for the K-12 scraper: the results table plus a review
+ * queue panel. The side panel is hidden below 640px.
+ */
+const cols =
+  'grid grid-cols-[1.4fr_1.2fr_0.6fr_0.9fr] gap-2.5 px-3.5 max-sm:gap-1.5 max-sm:px-2.5 max-sm:py-1.5';
+const confColor = { High: 'text-good', Med: 'text-warn', Low: 'text-bad' } as const;
+
+const rows: { district: string; contact: string; conf: keyof typeof confColor; source: string; review?: boolean }[] = [
+  { district: 'Fairview USD', contact: 'Superintendent', conf: 'High', source: '/staff' },
+  { district: 'Lakeside SD', contact: 'Tech director', conf: 'High', source: '/contact' },
+  { district: 'Pine Ridge ISD', contact: 'Main office', conf: 'Med', source: '/about' },
+  { district: 'North Valley SD', contact: 'Business office', conf: 'Low', source: 'To review', review: true },
+  { district: 'Cedar Falls CSD', contact: 'Superintendent', conf: 'High', source: '/leadership' },
+];
+---
+
+<div aria-hidden="true" class="absolute inset-0 flex items-stretch gap-[18px] px-12 py-11 max-sm:p-4">
+  <div
+    class="min-w-0 flex-[2_1_0] overflow-hidden rounded-[10px] bg-white text-[12px] leading-[1.4] shadow-card-lg max-sm:text-[10px] max-sm:leading-[1.3]"
+  >
+    <div class="flex justify-between border-b border-hair px-3.5 py-[11px]">
+      <span class="font-medium">districts.csv</span>
+      <span class="text-muted">Resumed at row 312</span>
+    </div>
+    <div class:list={[cols, 'border-b border-hair py-[9px] text-muted']}>
+      <span>District</span><span>Contact</span><span>Conf.</span><span>Source</span>
+    </div>
+    {
+      rows.map((row, i) => (
+        <div class:list={[cols, 'py-2.5', i < rows.length - 1 && 'border-b border-hair', row.review && 'bg-row']}>
+          <span>{row.district}</span>
+          <span>{row.contact}</span>
+          <span class={confColor[row.conf]}>{row.conf}</span>
+          <span class:list={[!row.review && 'text-muted']}>{row.source}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <div
+    class="flex min-w-0 flex-[1_1_0] flex-col gap-2.5 rounded-[10px] bg-white p-3.5 text-[12px] leading-[1.45] shadow-card-lg max-sm:hidden"
+  >
+    <span class="text-muted">Review queue</span>
+    <span class="font-medium">North Valley SD · Business office</span>
+    <span class="text-muted">Email found in a PDF newsletter, not on a staff page.</span>
+    <div class="flex gap-1.5">
+      <span class="rounded-md bg-ink px-2.5 py-1 text-white">Accept</span>
+      <span class="rounded-md border border-edge px-2.5 py-[3px]">Fix</span>
+      <span class="p-1 text-muted">Drop</span>
+    </div>
+  </div>
+</div>

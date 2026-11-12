@@ -1,0 +1,89 @@
+---
+import '@fontsource-variable/inter/wght.css';
+import '../styles/global.css';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import { site } from '../data/site';
+import { withBase, absoluteUrl } from '../lib/paths';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Open Graph type. Case studies use "article". */
+  ogType?: 'website' | 'article' | 'profile';
+  /** Site-relative path to a share image. Defaults to /og.png. */
+  ogImage?: string | undefined;
+  /** Site-relative path to an MP4, for pages that have a loop video. */
+  ogVideo?: string | undefined;
+  /** JSON-LD object to embed in the page. */
+  jsonLd?: Record<string, unknown> | undefined;
+  noindex?: boolean;
+  /** Extra classes on <body>, e.g. a different line height. */
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  ogType = 'website',
+  ogImage = '/og.png',
+  ogVideo,
+  jsonLd,
+  noindex = false,
+  bodyClass,
+} = Astro.props;
+
+const absolute = (path: string) => absoluteUrl(path, Astro.site);
+
+// Astro.url.pathname already includes the base path. Drop .html and /index so
+// the canonical URL is the clean one people actually visit.
+const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
+const canonical = new URL(cleanPath, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="author" content={site.name} />
+
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={absolute(ogImage)} />
+    {
+      ogVideo && (
+        <>
+          <meta property="og:video" content={absolute(ogVideo)} />
+          <meta property="og:video:type" content="video/mp4" />
+        </>
+      )
+    }
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absolute(ogImage)} />
+
+    {jsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body class={bodyClass}>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-10 focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2.5 focus:text-white"
+      >Skip to content</a
+    >
+    <slot />
+  </body>
+</html>

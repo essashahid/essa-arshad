@@ -1,0 +1,62 @@
+---
+import { withBase } from '../lib/paths';
+
+/**
+ * A short, silent, looping demo video.
+ *
+ * Nothing is downloaded until the video scrolls into view (preload="none"),
+ * it pauses when it leaves, and it never autoplays for people who have asked
+ * for reduced motion. Space is reserved with aspect-ratio so nothing shifts.
+ */
+interface Props {
+  /** Path without extension, e.g. /videos/<slug>/loop. */
+  src: string;
+  poster?: string | undefined;
+  /** Describes what the video shows, for screen readers. */
+  label: string;
+  /** CSS aspect-ratio value. */
+  ratio?: string;
+  class?: string;
+}
+
+const { src, poster, label, ratio = '16 / 10', class: className } = Astro.props;
+---
+
+<video
+  class:list={['block h-full w-full bg-tile object-cover', className]}
+  style={`aspect-ratio: ${ratio}`}
+  muted
+  loop
+  playsinline
+  preload="none"
+  poster={poster && withBase(poster)}
+  aria-label={label}
+  data-loop-video
+>
+  <source src={withBase(`${src}.webm`)} type="video/webm" />
+  <source src={withBase(`${src}.mp4`)} type="video/mp4" />
+</video>
+
+<script>
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-loop-video]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (reducedMotion.matches) {
+    // No autoplay. Offer controls instead, except inside a link where they can't be used.
+    videos.forEach((video) => {
+      if (!video.closest('a')) video.controls = true;
+    });
+  } else if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) video.play().catch(() => {});
+          else video.pause();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    videos.forEach((video) => observer.observe(video));
+  }
+</script>

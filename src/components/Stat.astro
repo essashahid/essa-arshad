@@ -1,0 +1,14 @@
+---
+/** One label/value pair. Use inside a <dl>. */
+interface Props {
+  label: string;
+  value: string;
+}
+
+const { label, value } = Astro.props;
+---
+
+<div>
+  <dt class="text-[13px] text-muted">{label}</dt>
+  <dd class="font-medium">{value}</dd>
+</div>

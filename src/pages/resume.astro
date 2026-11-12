@@ -1,0 +1,146 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site, hrefOrConnect } from '../data/site';
+import { resume } from '../data/resume';
+import { getProjects, projectPath } from '../lib/projects';
+import { withBase } from '../lib/paths';
+
+// Rows tied to a project (by slug) link to its page and vanish if it is hidden.
+const visible = new Map((await getProjects()).map((project) => [project.data.slug, project]));
+const resumeProjects = resume.projects
+  .filter((row) => !row.slug || visible.has(row.slug))
+  .map((row) => {
+    const project = row.slug ? visible.get(row.slug) : undefined;
+    return { ...row, link: row.href ?? (project ? projectPath(project) : undefined), external: Boolean(row.href) };
+  });
+
+const sections = [
+  { id: 'experience', label: 'Experience' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'education', label: 'Education' },
+];
+
+const socials = [
+  { label: 'GitHub', href: site.github },
+  { label: 'LinkedIn', href: site.linkedin },
+  { label: 'Upwork', href: hrefOrConnect(site.upworkUrl) },
+  { label: 'Email', href: `mailto:${site.email}` },
+];
+
+const row = 'grid grid-cols-[140px_minmax(0,1fr)] gap-x-6';
+const period = 'pt-[3px] text-[12px] font-semibold tracking-[0.06em] text-muted uppercase';
+const itemTitle = 'text-[15px] font-medium';
+const itemText = 'text-[14px] text-muted';
+const thumb = 'relative block aspect-[16/10] overflow-hidden rounded-lg bg-tile';
+---
+
+<BaseLayout title={resume.pageTitle} description={`${resume.headline}. ${resume.summary}`} ogType="profile">
+  <div class="mx-auto flex max-w-[1120px] flex-wrap gap-x-20 gap-y-12 px-6 py-24">
+    <header class="flex min-w-0 flex-[1_1_320px] flex-col gap-3">
+      <a href={withBase('/')} class="self-start py-2.5 text-muted hover:text-ink">← Index</a>
+      <h1 class="text-[40px] leading-[1.1] font-semibold tracking-[-0.03em]">{site.name}</h1>
+      <p class="text-[18px] font-medium">{resume.headline}</p>
+      <p class="max-w-[320px] text-muted">{resume.summary}</p>
+      <nav aria-label="Sections" class="mt-6 flex flex-col">
+        {
+          sections.map((section, i) => (
+            <a
+              href={`#${section.id}`}
+              class:list={[
+                '-my-0.5 flex min-h-11 items-center gap-3.5 text-[12px] font-semibold tracking-[0.08em] uppercase',
+                i === 0 ? 'text-ink' : 'text-muted hover:text-ink',
+              ]}
+            >
+              <span class:list={['h-px', i === 0 ? 'w-16 bg-ink' : 'w-8 bg-tick']} />
+              {section.label}
+            </a>
+          ))
+        }
+      </nav>
+      <div class="mt-6 flex flex-wrap gap-x-5">
+        {socials.map((social) => <a href={social.href} class="py-2.5 text-muted hover:text-ink">{social.label}</a>)}
+      </div>
+    </header>
+
+    <main id="main" class="flex min-w-0 flex-[999_1_520px] flex-col gap-16">
+      <section id="experience" class="flex flex-col gap-8" aria-labelledby="experience-heading">
+        <h2 id="experience-heading" class="sr-only">Experience</h2>
+        {
+          resume.experience.map((job) => (
+            <div class:list={[row, 'gap-y-2']}>
+              <span class={period}>{job.period}</span>
+              <div class:list={['flex flex-col', job.bullets || job.tags ? 'gap-2' : 'gap-1.5']}>
+                <h3 class={itemTitle}>
+                  {job.role} · {job.companyUrl ? <a href={job.companyUrl}>{job.company} ↗</a> : job.company}
+                </h3>
+                {job.bullets && (
+                  <ul class:list={[itemText, 'flex list-disc flex-col gap-1 pl-4']}>
+                    {job.bullets.map((bullet) => (
+                      <li>{bullet}</li>
+                    ))}
+                  </ul>
+                )}
+                {job.text && <p class={itemText}>{job.text}</p>}
+                {job.tags && (
+                  <ul class="flex flex-wrap gap-1.5" aria-label="Technologies">
+                    {job.tags.map((tag) => (
+                      <li class="rounded-full bg-tile px-2.5 py-1 text-[12px] font-medium text-chip">{tag}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          ))
+        }
+        <a href={withBase(resume.pdf.href)} class="self-start py-2.5 font-medium text-ink">{resume.pdf.label} ↗</a>
+      </section>
+
+      <section id="projects" class="flex flex-col gap-6" aria-labelledby="projects-heading">
+        <h2 id="projects-heading" class="sr-only">Projects</h2>
+        {
+          resumeProjects.map((project) => (
+            <div class:list={[row, 'items-center gap-y-3']}>
+              {project.link ? (
+                <a href={project.link} aria-label={project.label} class={thumb}>
+                  <span aria-hidden="true" class="absolute inset-x-4 inset-y-3.5 rounded bg-white shadow-thumb" />
+                </a>
+              ) : (
+                <div class={thumb} aria-hidden="true">
+                  <span class="absolute inset-x-4 inset-y-3.5 rounded bg-white shadow-thumb" />
+                </div>
+              )}
+              <div>
+                <h3 class={itemTitle}>
+                  {project.link ? (
+                    <a href={project.link}>
+                      {project.title}
+                      {project.external && ' ↗'}
+                    </a>
+                  ) : (
+                    project.title
+                  )}
+                </h3>
+                <p class={itemText}>{project.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </section>
+
+      <section id="education" class="flex flex-col gap-8" aria-labelledby="education-heading">
+        <h2 id="education-heading" class="sr-only">Education</h2>
+        {
+          resume.education.map((item) => (
+            <div class:list={[row, 'gap-y-2']}>
+              <span class={period}>{item.period}</span>
+              <div>
+                <h3 class={itemTitle}>{item.title}</h3>
+                <p class={itemText}>{item.detail}</p>
+              </div>
+            </div>
+          ))
+        }
+      </section>
+    </main>
+  </div>
+</BaseLayout>

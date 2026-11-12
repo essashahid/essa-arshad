@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import ProjectTile from '../components/ProjectTile.astro';
+import { site, hrefOrConnect } from '../data/site';
+import { home } from '../data/home';
+import { resume } from '../data/resume';
+import { getProjects, inGrid, projectPath } from '../lib/projects';
+import { withBase, absoluteUrl } from '../lib/paths';
+
+const projects = await getProjects();
+const gridProjects = projects.filter(inGrid);
+const alsoProjects = projects.filter((project) => !inGrid(project));
+
+const heading = 'text-[15px] font-medium text-muted';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: absoluteUrl('/', Astro.site),
+  email: `mailto:${site.email}`,
+  jobTitle: site.role,
+  description: resume.summary,
+  worksFor: { '@type': 'Organization', name: site.employer.name, url: site.employer.url },
+  sameAs: [site.github, site.linkedin],
+};
+---
+
+<BaseLayout title={site.title} description={site.description} ogType="profile" jsonLd={jsonLd}>
+  <main id="main">
+    <div class="mx-auto flex max-w-[600px] flex-col gap-12 px-6 pt-28">
+      <section class="flex flex-col gap-4">
+        <div>
+          <h1 class="text-[15px] leading-normal font-medium">{site.name}</h1>
+          <p class="text-muted">{site.role} at <a href={site.employer.url}>{site.employer.name}</a></p>
+        </div>
+        <p>{home.intro}</p>
+        <p>
+          {home.findMe.lead}{' '}
+          <a href={site.github} class="link">{home.findMe.github}</a>,{' '}
+          <a href={site.linkedin} class="link">{home.findMe.linkedin}</a>{' or '}
+          <a href={hrefOrConnect(site.upworkUrl, true)} class="link">{home.findMe.upwork}</a>.
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-3" aria-labelledby="building">
+        <h2 id="building" class={heading}>{home.building.heading}</h2>
+        <ul class="flex flex-col gap-1.5">
+          {
+            home.building.items.map((item) => (
+              <li>
+                {item.href ? (
+                  <a href={hrefOrConnect(item.href, true)} class="link font-medium">
+                    {item.name}
+                  </a>
+                ) : (
+                  <span class="font-medium">{item.name}</span>
+                )}{' '}
+                <span class="text-muted">{item.detail}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+
+    <section id="projects" class="mx-auto flex max-w-[880px] flex-col gap-4 px-6 pt-12" aria-labelledby="projects-heading">
+      <h2 id="projects-heading" class={heading}>{home.projects.heading}</h2>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] gap-x-6 gap-y-8">
+        {gridProjects.map((project) => <ProjectTile project={project} />)}
+      </div>
+      {
+        alsoProjects.length > 0 && (
+          <p class="pt-2 text-muted">
+            {home.projects.alsoLabel}{' '}
+            {alsoProjects.map((project, i) => (
+              <>
+                {i > 0 && ' · '}
+                <a href={projectPath(project)} class="link">
+                  {project.data.title}
+                </a>
+                {project.data.tagline && ` — ${project.data.tagline}`}
+              </>
+            ))}
+          </p>
+        )
+      }
+    </section>
+
+    <div class="mx-auto flex max-w-[600px] flex-col gap-12 px-6 pt-12">
+      <section class="flex flex-col gap-3" aria-labelledby="now">
+        <h2 id="now" class={heading}>{home.now.heading}</h2>
+        <p>{home.now.text}</p>
+      </section>
+
+      <section id="connect" class="flex flex-col gap-3" aria-labelledby="connect-heading">
+        <h2 id="connect-heading" class={heading}>{home.connect.heading}</h2>
+        <p>
+          <a href={`mailto:${site.email}`} class="link">{site.email}</a>{` ${home.connect.or} `}
+          <a href={hrefOrConnect(site.bookingUrl, true)} class="link">{home.connect.bookLabel}</a>
+          {`. ${home.connect.resumeLead} `}
+          <a href={withBase('/resume')} class="link">{home.connect.resumeLabel}</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+  <Footer class="max-w-[600px]" />
+</BaseLayout>

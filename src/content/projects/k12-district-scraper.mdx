@@ -1,0 +1,55 @@
+---
+title: K-12 District Scraper
+slug: k12-district-scraper
+date: 2026-09-01
+status: Shipped
+isSampleBuild: true
+summary: Verified contacts for 500 US school districts. Every field links to its source, and doubtful rows go to a person.
+stats:
+  - label: Districts
+    value: '500'
+  - label: Stack
+    value: Python, Playwright
+  - label: Run time
+    value: '[X min]'
+  - label: Sent to review
+    value: '[X%]'
+stack:
+  - Python
+  - Playwright
+repoUrl: https://github.com/essashahid
+mock: scraper
+loopCaption: A resumed run, then a low-confidence row going to review.
+loopDuration: '0:15'
+chapters:
+  - title: The brief
+  - title: A live run
+  - title: Review queue
+  - title: QA report
+links:
+  - label: Sample CSV
+    href: '#'
+  - label: QA report
+    href: '#'
+order: 1
+---
+
+## The problem
+
+District websites are inconsistent, slow and often JavaScript-heavy. And a wrong email is worse than a missing one, because someone sends outreach to it.
+
+## What I built
+
+1. Load districts from the NCES list
+2. Fetch with requests, fall back to Playwright <span class="text-muted">· robots.txt, rate limits, cache</span>
+3. Extract, dedupe and attach a source URL to each field
+4. Grade confidence; send low rows to a review queue
+5. Export CSV and an HTML QA report
+
+## Why these settings
+
+**Source on every field.** Anyone can check a value in one click.
+
+**Resumable runs.** A crash at row 312 restarts at row 312.
+
+**50 before 500.** A small run proved grading before the full one.

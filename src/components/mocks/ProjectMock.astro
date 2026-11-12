@@ -1,0 +1,36 @@
+---
+/**
+ * Picks the mock UI for a project. Shown wherever a loop video would go,
+ * until the project has one.
+ *
+ * - `tile`: the 16:10 thumbnail on the home page.
+ * - `hero`: the large frame on the case study page. Only the scraper has a
+ *   dedicated hero mock; the others reuse their tile mock, centered.
+ */
+import ScraperTableMock from './ScraperTableMock.astro';
+import ScraperHeroMock from './ScraperHeroMock.astro';
+import ChatMock from './ChatMock.astro';
+import ApprovalMock from './ApprovalMock.astro';
+import DocumentMock from './DocumentMock.astro';
+
+interface Props {
+  mock?: 'scraper' | 'chat' | 'approval' | 'document' | undefined;
+  variant?: 'tile' | 'hero';
+}
+
+const { mock, variant = 'tile' } = Astro.props;
+const tileMocks = { scraper: ScraperTableMock, chat: ChatMock, approval: ApprovalMock, document: DocumentMock };
+const Mock = mock ? tileMocks[mock] : undefined;
+---
+
+{Mock && variant === 'tile' && <Mock />}
+{mock === 'scraper' && variant === 'hero' && <ScraperHeroMock />}
+{
+  Mock && mock !== 'scraper' && variant === 'hero' && (
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="relative aspect-[16/10] w-full max-w-[428px]">
+        <Mock />
+      </div>
+    </div>
+  )
+}

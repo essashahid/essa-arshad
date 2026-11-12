@@ -1,0 +1,138 @@
+---
+/**
+ * Case study page. Everything except the body comes from the project's
+ * front matter; the MDX body (Problem, What I built, Why these settings)
+ * goes in the slot.
+ */
+import BaseLayout from './BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import Stat from '../components/Stat.astro';
+import LoopVideo from '../components/LoopVideo.astro';
+import YouTubeFacade from '../components/YouTubeFacade.astro';
+import WhoBuiltThis from '../components/WhoBuiltThis.astro';
+import ProjectMock from '../components/mocks/ProjectMock.astro';
+import { site } from '../data/site';
+import { caseStudySubtitle, type Project } from '../lib/projects';
+import { withBase, absoluteUrl } from '../lib/paths';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const d = project.data;
+
+const links = [
+  ...(d.repoUrl ? [{ label: 'Code', href: d.repoUrl }] : []),
+  ...(d.liveUrl ? [{ label: 'Live app', href: d.liveUrl }] : []),
+  ...d.links,
+];
+
+// Hero frame: 16:9 as designed. Reused tile mocks get 16:10 on phones so they fit.
+const heroRatio = d.loopVideo || d.poster || d.mock === 'scraper' || !d.mock ? 'aspect-video' : 'aspect-[16/10] sm:aspect-video';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: d.title,
+  description: d.summary,
+  author: { '@type': 'Person', name: site.name, url: absoluteUrl('/', Astro.site) },
+  ...(d.date ? { datePublished: d.date.toISOString().slice(0, 10) } : {}),
+  ...(d.stack.length ? { keywords: d.stack.join(', ') } : {}),
+  ...(d.liveUrl ? { url: d.liveUrl } : {}),
+};
+---
+
+<BaseLayout
+  title={`${d.title} — case study`}
+  description={d.summary}
+  ogType="article"
+  ogImage={d.poster}
+  ogVideo={d.loopVideo ? `${d.loopVideo}.mp4` : undefined}
+  jsonLd={jsonLd}
+  bodyClass="leading-[1.7]"
+>
+  <main id="main">
+    <article>
+      <div class="mx-auto flex max-w-[640px] flex-col gap-5 px-6 pt-[72px]">
+        <a href={withBase('/')} class="self-start py-2.5 text-muted hover:text-ink">← Index</a>
+        <div class="flex flex-col gap-1">
+          <h1 class="text-[24px] leading-[1.3] font-semibold tracking-[-0.01em]">{d.title}</h1>
+          <span class="text-muted">{caseStudySubtitle(project)}</span>
+        </div>
+        <p>{d.summary}</p>
+        {
+          d.stats.length > 0 && (
+            <dl class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,130px),1fr))] gap-4 border-y border-rule py-4">
+              {d.stats.map((stat) => (
+                <Stat label={stat.label} value={stat.value} />
+              ))}
+            </dl>
+          )
+        }
+      </div>
+
+      {
+        (d.loopVideo || d.poster || d.mock) && (
+          <figure class="mx-auto flex max-w-[880px] flex-col gap-2.5 px-6 pt-10">
+            <div class:list={['relative overflow-hidden rounded-xl bg-tile', heroRatio]}>
+              {d.loopVideo ? (
+                <LoopVideo
+                  src={d.loopVideo}
+                  poster={d.poster}
+                  label={d.loopCaption ?? `${d.title} demo`}
+                  ratio="16 / 9"
+                />
+              ) : d.poster ? (
+                <div class="absolute inset-0 px-12 py-11 max-sm:p-4">
+                  <img
+                    src={withBase(d.poster)}
+                    alt={`Screenshot of ${d.title}`}
+                    width="1200"
+                    height="750"
+                    decoding="async"
+                    class="h-full w-full rounded-[10px] object-cover object-top shadow-card-lg"
+                  />
+                </div>
+              ) : (
+                <ProjectMock mock={d.mock} variant="hero" />
+              )}
+            </div>
+            {(d.loopCaption || d.loopDuration) && (
+              <figcaption class="flex justify-between gap-3 text-[13px] text-muted">
+                <span>{d.loopCaption}</span>
+                <span>{d.loopDuration}</span>
+              </figcaption>
+            )}
+          </figure>
+        )
+      }
+
+      <div class="mx-auto flex max-w-[640px] flex-col gap-4 px-6 pt-12">
+        <div class="case-prose">
+          <slot />
+        </div>
+
+        <h2 class="mt-6 text-[16px] font-semibold">Walkthrough</h2>
+        <YouTubeFacade videoId={d.walkthroughYouTubeId} title={d.title} chapters={d.chapters} />
+        {
+          links.length > 0 && (
+            <p>
+              {links.map((link, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  <a href={link.href} class="link">
+                    {link.label}
+                  </a>
+                </>
+              ))}
+            </p>
+          )
+        }
+
+        <WhoBuiltThis isSampleBuild={d.isSampleBuild} class="mt-8" />
+      </div>
+    </article>
+  </main>
+  <Footer class="max-w-[640px]" />
+</BaseLayout>

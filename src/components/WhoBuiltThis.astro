@@ -1,0 +1,28 @@
+---
+/** The card at the end of every case study. Copy lives in src/data/site.ts. */
+import { site } from '../data/site';
+import { withBase } from '../lib/paths';
+
+interface Props {
+  /** Adds the "this is a sample build" sentence. */
+  isSampleBuild?: boolean;
+  class?: string;
+}
+
+const { isSampleBuild = false, class: className } = Astro.props;
+const { bio, sampleBuildNote } = site.whoBuiltThis;
+---
+
+<aside
+  aria-labelledby="who-built-this"
+  class:list={['flex flex-col gap-2 rounded-xl border border-rule bg-panel p-5', className]}
+>
+  <span id="who-built-this" class="text-[13px] text-muted">Who built this</span>
+  <p>{bio}{isSampleBuild && ` ${sampleBuildNote}`}</p>
+  <div class="mt-2 flex flex-wrap gap-2.5">
+    <a href={`${withBase('/')}#connect`} class="inline-flex h-11 items-center rounded-lg bg-ink px-4 font-medium text-white">Get in touch</a>
+    <a href={withBase('/resume')} class="inline-flex h-11 items-center rounded-lg border border-edge bg-white px-4 font-medium text-ink"
+      >Résumé</a
+    >
+  </div>
+</aside>
