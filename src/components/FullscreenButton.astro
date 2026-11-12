@@ -1,0 +1,30 @@
+---
+/**
+ * Small corner button that plays a LoopVideo full screen, with normal video
+ * controls. Place it as a sibling of the video's link (a button can't sit
+ * inside a link), inside a `group relative` wrapper. The click handling lives
+ * in LoopVideo's script.
+ *
+ * Shown on hover or keyboard focus with a mouse, always shown on touch screens.
+ */
+interface Props {
+  /** id of the <video> to open. */
+  target: string;
+  /** What the video is, e.g. "Nook & Acre demo". */
+  label: string;
+}
+
+const { target, label } = Astro.props;
+---
+
+<button
+  type="button"
+  data-fullscreen-for={target}
+  aria-label={`Play ${label} full screen`}
+  title="Full screen"
+  class="absolute right-3 bottom-3 z-10 flex size-11 items-center justify-center rounded-full bg-white/90 text-ink opacity-0 shadow-card transition-opacity duration-200 group-hover:opacity-100 pointer-coarse:opacity-100 hover:bg-white focus-visible:opacity-100"
+>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
+  </svg>
+</button>

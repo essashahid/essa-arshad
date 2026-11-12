@@ -57,6 +57,12 @@
   }
 }
 
+/* Loop videos crop to fill their tile; full screen shows the whole frame. */
+video:fullscreen {
+  object-fit: contain;
+  background: #000;
+}
+
 /* Inline text link: dark text with a light gray underline. */
 @utility link {
   color: var(--color-ink);

@@ -16,13 +16,16 @@ interface Props {
   label: string;
   /** CSS aspect-ratio value. */
   ratio?: string;
+  /** Needed when a FullscreenButton points at this video. */
+  id?: string;
   class?: string;
 }
 
-const { src, poster, label, ratio = '16 / 10', class: className } = Astro.props;
+const { src, poster, label, ratio = '16 / 10', id, class: className } = Astro.props;
 ---
 
 <video
+  id={id}
   class:list={['block h-full w-full bg-tile object-cover', className]}
   style={`aspect-ratio: ${ratio}`}
   muted
@@ -59,4 +62,27 @@ const { src, poster, label, ratio = '16 / 10', class: className } = Astro.props;
     );
     videos.forEach((video) => observer.observe(video));
   }
+
+  // Full screen: show normal controls while open, hide them again after.
+  const resetControls = (video: HTMLVideoElement) => {
+    video.controls = reducedMotion.matches && !video.closest('a');
+  };
+  document.addEventListener('click', (event) => {
+    const button = (event.target as Element).closest<HTMLElement>('[data-fullscreen-for]');
+    const video = button && (document.getElementById(button.dataset.fullscreenFor ?? '') as HTMLVideoElement | null);
+    if (!video) return;
+    event.preventDefault();
+    video.controls = true;
+    video.play().catch(() => {});
+    if (video.requestFullscreen) {
+      video.requestFullscreen().catch(() => resetControls(video));
+    } else {
+      // iPhone Safari only supports full screen on the video element itself.
+      (video as HTMLVideoElement & { webkitEnterFullscreen?: () => void }).webkitEnterFullscreen?.();
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) videos.forEach(resetControls);
+  });
+  videos.forEach((video) => video.addEventListener('webkitendfullscreen', () => resetControls(video)));
 </script>

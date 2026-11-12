@@ -4,6 +4,7 @@
  * The thumbnail is the loop video if the project has one, then a poster image
  * (a screenshot), then its mock UI.
  */
+import FullscreenButton from './FullscreenButton.astro';
 import LoopVideo from './LoopVideo.astro';
 import ProjectMock from './mocks/ProjectMock.astro';
 import { projectPath, tileCaption, type Project } from '../lib/projects';
@@ -18,14 +19,16 @@ const { title, status, tileLink, liveUrl, loopVideo, poster, mock } = project.da
 
 const external = tileLink === 'live' && Boolean(liveUrl);
 const href = external && liveUrl ? liveUrl : projectPath(project);
+const videoId = `loop-${project.data.slug}`;
 const label = external ? `${title}, live app` : status === 'In progress' ? `${title} project` : `${title} case study`;
 ---
 
 <figure class="flex flex-col gap-2.5">
+  <div class="group relative">
   <a href={href} aria-label={label} class="relative block aspect-[16/10] overflow-hidden rounded-xl bg-tile text-ink">
     {
       loopVideo ? (
-        <LoopVideo src={loopVideo} poster={poster} label={`${title} demo`} ratio="16 / 10" />
+        <LoopVideo id={videoId} src={loopVideo} poster={poster} label={`${title} demo`} ratio="16 / 10" />
       ) : poster ? (
         <div aria-hidden="true" class="absolute inset-0 flex items-center px-8 py-[30px]">
           <img
@@ -43,6 +46,8 @@ const label = external ? `${title}, live app` : status === 'In progress' ? `${ti
       )
     }
   </a>
+  {loopVideo && <FullscreenButton target={videoId} label={`${title} demo`} />}
+  </div>
   <figcaption class="flex justify-between gap-3">
     <a href={href} class="text-ink">{title}{external && ' ↗'}</a>
     <span class="text-muted">{tileCaption(project)}</span>

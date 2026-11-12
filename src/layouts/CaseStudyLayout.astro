@@ -8,6 +8,7 @@ import BaseLayout from './BaseLayout.astro';
 import Footer from '../components/Footer.astro';
 import Stat from '../components/Stat.astro';
 import LoopVideo from '../components/LoopVideo.astro';
+import FullscreenButton from '../components/FullscreenButton.astro';
 import YouTubeFacade from '../components/YouTubeFacade.astro';
 import WhoBuiltThis from '../components/WhoBuiltThis.astro';
 import ProjectMock from '../components/mocks/ProjectMock.astro';
@@ -80,14 +81,18 @@ const jsonLd = {
       {
         (d.loopVideo || d.poster || d.mock) && (
           <figure class="mx-auto flex max-w-[880px] flex-col gap-2.5 px-6 pt-10">
-            <div class:list={['relative overflow-hidden rounded-xl bg-tile', heroRatio]}>
+            <div class:list={['group relative overflow-hidden rounded-xl bg-tile', heroRatio]}>
               {d.loopVideo ? (
-                <LoopVideo
-                  src={d.loopVideo}
-                  poster={d.poster}
-                  label={d.loopCaption ?? `${d.title} demo`}
-                  ratio="16 / 10"
-                />
+                <>
+                  <LoopVideo
+                    id="case-study-loop"
+                    src={d.loopVideo}
+                    poster={d.poster}
+                    label={d.loopCaption ?? `${d.title} demo`}
+                    ratio="16 / 10"
+                  />
+                  <FullscreenButton target="case-study-loop" label={`${d.title} demo`} />
+                </>
               ) : d.poster ? (
                 <div class="absolute inset-0 px-12 py-11 max-sm:p-4">
                   <img
