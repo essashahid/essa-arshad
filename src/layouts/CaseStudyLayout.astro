@@ -29,7 +29,12 @@ const links = [
 ];
 
 // Hero frame: 16:9 as designed. Reused tile mocks get 16:10 on phones so they fit.
-const heroRatio = d.loopVideo || d.poster || d.mock === 'scraper' || !d.mock ? 'aspect-video' : 'aspect-[16/10] sm:aspect-video';
+// Loop videos are 16:10 (1280x800), so their frame matches instead of cropping.
+const heroRatio = d.loopVideo
+  ? 'aspect-[16/10]'
+  : d.poster || d.mock === 'scraper' || !d.mock
+    ? 'aspect-video'
+    : 'aspect-[16/10] sm:aspect-video';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -81,7 +86,7 @@ const jsonLd = {
                   src={d.loopVideo}
                   poster={d.poster}
                   label={d.loopCaption ?? `${d.title} demo`}
-                  ratio="16 / 9"
+                  ratio="16 / 10"
                 />
               ) : d.poster ? (
                 <div class="absolute inset-0 px-12 py-11 max-sm:p-4">
