@@ -59,3 +59,12 @@ All the fields you listed are there. Differences and additions:
 - **Lighthouse (mobile, local preview, with the base path):** 100 across the board on home, K-12, Nook & Acre, DismissalIQ and résumé.
 - **Repo visibility.** GitHub Pages isn't available for private repos on your plan, so with your go-ahead I made `essashahid/essa-arshad` public and enabled Pages (source: GitHub Actions).
 - **First deploy is blocked by GitHub billing.** The workflow run stops before it starts with "your account is locked due to a billing issue". Fix that at https://github.com/settings/billing, then re-run the workflow (Actions → Deploy to GitHub Pages → Run workflow). Nothing in the repo needs to change.
+
+## Round 3 (temporary values)
+
+- **Every placeholder is filled with an invented value**, marked `TEMP` and listed in `TEMP-VALUES.md`. These are not measurements. The site is public, so they will be visible to visitors once the Pages deploy runs.
+- **Comment style.** YAML front matter has no `//` comments, so the markers there are `# TEMP`. In page text they are `{/* TEMP */}`. `grep -rn TEMP src` finds both.
+- **Nook & Acre "[CLIENT OR SAMPLE BUILD]"** is filled as "Sample build" rather than a made-up client. The "modeled on a real Upwork posting" sentence is still K-12 only.
+- **Stacks.** The invented parts are the additions: Next.js and Postgres (PSX), Claude API and Langfuse (OpenClaw), Python and Claude API (EvidenceOps). "Claude" on PSX and "OpenClaw" were already facts.
+- **Walkthrough lengths** use a new optional `walkthroughDuration` field. K-12 chapter times (0:00, 0:45, 2:10, 3:25) fit inside its 4:12.
+- **Real links added:** your Upwork profile and the ChatGPT plugin listing, as you supplied them. Booking, Sample CSV and QA report stay `#`.

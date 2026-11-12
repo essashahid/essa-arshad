@@ -103,6 +103,7 @@ Optional fields:
 | `loopVideo` | Loop video (see below). Uses `poster` as its first frame |
 | `loopCaption`, `loopDuration` | Caption and length under the loop on the case study |
 | `walkthroughYouTubeId` | YouTube ID for the narrated walkthrough |
+| `walkthroughDuration` | Length shown on the gray walkthrough frame until `walkthroughYouTubeId` is set |
 | `chapters` | List of `title` + `start` (`m:ss`) shown under the walkthrough |
 | `links` | Extra links under the walkthrough, e.g. Sample CSV |
 
@@ -139,53 +140,17 @@ chapters:
 
 The page shows a poster and play button; YouTube (`youtube-nocookie.com`) loads only after a click.
 
-## Placeholders still on the site
+## Placeholders and temporary values
 
-Search the project for `[` to find them all.
+There are no `[PLACEHOLDER]` values left on the site. They were filled with **invented, temporary values**, each marked `TEMP` in its file and listed with file and line in [TEMP-VALUES.md](TEMP-VALUES.md). Replace them with real ones before sharing the site widely.
 
-**Links** (`src/data/site.ts`)
+```sh
+grep -rn TEMP src     # everything still temporary
+```
 
-- `upworkUrl` is `#`. Until set, "Upwork" links go to the Connect section.
-- `bookingUrl` is `#`. Until set, "book a call" goes to the Connect section.
-- `pluginUrl` is `#` — this is the [PLUGIN URL] for the ChatGPT plugin row on the home page. Until set, that link goes to the Connect section.
+Still unset:
 
-**K-12 District Scraper** (`src/content/projects/k12-district-scraper.mdx`)
-
-- `[X min]` — run time
-- `[X%]` — share of rows sent to review
-- `[DURATION]` — shown on the walkthrough until `walkthroughYouTubeId` is set
-- Chapter start times (not set; chapters show as plain text until there is a video)
-- "Sample CSV" and "QA report" links are `#`
-- "Code" links to your GitHub profile, not a specific repo
-- No loop video yet (mock UI is shown)
-
-**Nook & Acre** (`nook-and-acre.mdx`)
-
-- `[CLIENT OR SAMPLE BUILD]` and `[DATE]` — in `subtitle`
-- `[PROBLEM]` — body copy
-- `[METRIC]` / `[X]` — a headline number
-- `[DURATION]` — walkthrough
-
-**PSX Research Copilot** (`psx-research-copilot.mdx`)
-
-- `[DATE]` — launch date (set `date`)
-- `[STACK]` — the rest of the stack after Claude
-- `[METRIC]` / `[X]` — a headline number
-- `[PROBLEM: …]`, `[STEP 1]`–`[STEP 3]`, `[DECISION]`, `[REASON]` — body copy
-- `[DURATION]` — walkthrough
-
-**OpenClaw Deployment** (`openclaw-deployment.mdx`)
-
-- `[STACK]`, `[METRIC]` / `[X]`
-- `[PROBLEM: …]`, `[STEP 1]`–`[STEP 3]`, `[DECISION]`, `[REASON]`
-- `[DURATION]`
-
-**DismissalIQ** (`dismissaliq.mdx`)
-
-- `[DURATION]` — walkthrough. No other placeholders; everything else is from your résumé.
-
-**EvidenceOps** (`evidenceops.mdx`) — hidden, so none of these are visible on the site
-
-- `[STACK]`, `[METRIC]` / `[X]`
-- `[PROBLEM: …]`, `[STEP 1]`–`[STEP 3]`, `[DECISION]`, `[REASON]`
-- `[DURATION]`
+- `bookingUrl` in `src/data/site.ts` is `#`. Until set, "book a call" goes to the Connect section.
+- "Sample CSV" and "QA report" on the K-12 case study are `#`.
+- "Code" on the K-12 case study links to your GitHub profile, not a specific repo.
+- No loop videos or walkthrough videos yet. Mock UIs and the gray walkthrough frame are shown. `walkthroughDuration` is the length shown on that frame until a video exists.

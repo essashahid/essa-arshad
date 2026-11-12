@@ -16,11 +16,13 @@ interface Props {
   /** Used for the player's accessible name. */
   title: string;
   chapters?: { title: string; start?: string | undefined }[];
+  /** Length shown on the placeholder when there is no video yet. */
+  duration?: string | undefined;
   /** Custom poster. Defaults to YouTube's thumbnail for the video. */
   poster?: string | undefined;
 }
 
-const { videoId, title, chapters = [], poster } = Astro.props;
+const { videoId, title, chapters = [], poster, duration = '[DURATION]' } = Astro.props;
 
 const posterSrc = poster ?? (videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : undefined);
 const watchUrl = (seconds = 0) =>
@@ -85,7 +87,7 @@ const playIcon = 'M8 5.5v13l11-6.5z';
             <path d={playIcon} />
           </svg>
         </span>
-        <span class="absolute right-4 bottom-3 text-[13px] text-muted" aria-hidden="true">[DURATION]</span>
+        <span class="absolute right-4 bottom-3 text-[13px] text-muted" aria-hidden="true">{duration}</span>
       </div>
       {chapters.length > 0 && (
         <ul aria-label="Chapters" class="flex flex-wrap gap-x-5">

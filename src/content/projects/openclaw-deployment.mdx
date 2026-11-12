@@ -8,25 +8,26 @@ stats:
   - label: Status
     value: In progress
   - label: Stack
-    value: 'OpenClaw, [STACK]'
-  - label: '[METRIC]'
-    value: '[X]'
+    value: OpenClaw, Claude API, Langfuse # TEMP (Claude API, Langfuse)
+  - label: Setup time # TEMP
+    value: 20 min # TEMP
 stack:
   - OpenClaw
 mock: approval
+walkthroughDuration: '3:30' # TEMP
 order: 4
 ---
 
 ## The problem
 
-[PROBLEM: who this is for, and what was slow or risky before]
+Agents that send email or change records are easy to demo and hard to trust. A team needs a setup where every outbound action waits for a person, and every step is logged. {/* TEMP */}
 
 ## What I built
 
-1. [STEP 1]
-2. [STEP 2]
-3. [STEP 3]
+1. Deploy OpenClaw with a read-only inbox tool and a draft-only send tool {/* TEMP */}
+2. Hold every outbound message in an approval queue {/* TEMP */}
+3. Log each step with a timestamp and trace every run {/* TEMP */}
 
 ## Why these settings
 
-**[DECISION].** [REASON]
+**Approve before send.** Nothing leaves until a person clicks Approve. {/* TEMP */}

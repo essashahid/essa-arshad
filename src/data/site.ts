@@ -8,13 +8,12 @@ export const site = {
   github: 'https://github.com/essashahid',
   linkedin: 'https://www.linkedin.com/in/essaarshad/',
 
-  /** Placeholder. Replace `#` with your Upwork profile URL. */
-  upworkUrl: '#',
+  upworkUrl: 'https://www.upwork.com/freelancers/~01c68334e196c35176?mp_source=share',
   /** Placeholder. Replace `#` with your booking link (Cal.com, Calendly…). */
   bookingUrl: '#',
 
-  /** Placeholder for [PLUGIN URL]. Replace `#` with the ChatGPT app directory listing. */
-  pluginUrl: '#',
+  /** ImportYeti's listing in ChatGPT's app directory. */
+  pluginUrl: 'https://chatgpt.com/plugins/plugin_asdk_app_6ab67eb502508191a4656c0f7eb48dce',
 
   role: 'AI Agent Developer',
   employer: { name: 'ImportYeti', url: 'https://www.importyeti.com' },

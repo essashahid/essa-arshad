@@ -23,6 +23,8 @@ const projects = defineCollection({
     /** e.g. /videos/<slug>/poster.webp */
     poster: z.string().startsWith('/').optional(),
     walkthroughYouTubeId: z.string().optional(),
+    /** Length shown on the walkthrough placeholder until the video exists, e.g. "4:12". */
+    walkthroughDuration: z.string().optional(),
     chapters: z
       .array(
         z.object({
